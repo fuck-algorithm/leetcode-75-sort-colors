@@ -1,0 +1,108 @@
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 16px;
+  background: rgba(26, 26, 46, 0.9);
+  border-bottom: 1px solid #2a2a4a;
+}
+
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.back-link {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  color: #4ecdc4;
+  text-decoration: none;
+  font-size: 13px;
+  padding: 4px 8px;
+  border-radius: 4px;
+  transition: all 0.2s;
+}
+
+.back-link:hover {
+  background: rgba(78, 205, 196, 0.1);
+  color: #6ee7df;
+}
+
+.back-link svg {
+  width: 14px;
+  height: 14px;
+}
+
+.header-center {
+  flex: 1;
+  text-align: center;
+}
+
+.title-link {
+  color: #fff;
+  text-decoration: none;
+  font-size: 18px;
+  font-weight: 600;
+  transition: color 0.2s;
+}
+
+.title-link:hover {
+  color: #4ecdc4;
+}
+
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.algorithm-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  background: rgba(78, 205, 196, 0.1);
+  border: 1px solid #4ecdc4;
+  border-radius: 6px;
+  color: #4ecdc4;
+  font-size: 13px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.algorithm-btn:hover {
+  background: rgba(78, 205, 196, 0.2);
+}
+
+.algorithm-btn svg {
+  width: 16px;
+  height: 16px;
+}
+
+.github-link {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: #e0e0e0;
+  text-decoration: none;
+  padding: 6px 10px;
+  border-radius: 6px;
+  transition: all 0.2s;
+}
+
+.github-link:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: #fff;
+}
+
+.github-link svg {
+  width: 20px;
+  height: 20px;
+}
+
+.star-count {
+  font-size: 13px;
+  color: #ffd700;
+}
