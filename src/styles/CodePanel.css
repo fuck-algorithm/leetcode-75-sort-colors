@@ -1,9 +1,11 @@
+/* src/styles/CodePanel.css */
 .code-panel {
   width: 380px;
   display: flex;
   flex-direction: column;
   background: rgba(26, 26, 46, 0.95);
   border-left: 1px solid #2a2a4a;
+  overflow: hidden;
 }
 
 .code-header {
@@ -12,6 +14,7 @@
   justify-content: space-between;
   padding: 8px 12px;
   border-bottom: 1px solid #2a2a4a;
+  flex-shrink: 0;
 }
 
 .code-title {
@@ -46,82 +49,13 @@
   color: #4ecdc4;
 }
 
+/* 关键修复：min-height:0 让 flex 子项可收缩，overflow-x:hidden 防止整体撑破 */
 .code-content {
   flex: 1;
-  overflow: auto;
+  min-height: 0;
+  overflow-y: auto;
+  overflow-x: hidden;
   padding: 12px 0;
-}
-
-.code-line {
-  display: flex;
-  padding: 2px 12px;
-  font-family: 'Monaco', 'Menlo', 'Consolas', monospace;
-  font-size: 12px;
-  line-height: 1.6;
-  transition: background 0.2s;
-}
-
-.code-line.highlighted {
-  background: rgba(78, 205, 196, 0.15);
-}
-
-.code-line-number {
-  width: 32px;
-  color: #4a4a6a;
-  text-align: right;
-  padding-right: 12px;
-  user-select: none;
-  flex-shrink: 0;
-}
-
-.code-line.highlighted .code-line-number {
-  color: #4ecdc4;
-}
-
-.code-line-content {
-  flex: 1;
-  color: #e0e0e0;
-  white-space: pre;
-}
-
-.code-line-variable {
-  margin-left: 16px;
-  padding: 2px 8px;
-  background: rgba(255, 215, 0, 0.15);
-  border-radius: 4px;
-  color: #ffd700;
-  font-size: 11px;
-  white-space: nowrap;
-}
-
-/* 语法高亮 */
-.code-keyword {
-  color: #ff79c6;
-}
-
-.code-type {
-  color: #8be9fd;
-}
-
-.code-number {
-  color: #bd93f9;
-}
-
-.code-string {
-  color: #f1fa8c;
-}
-
-.code-comment {
-  color: #6272a4;
-  font-style: italic;
-}
-
-.code-function {
-  color: #50fa7b;
-}
-
-.code-operator {
-  color: #ff79c6;
 }
 
 .variables-panel {
