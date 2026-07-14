@@ -21,7 +21,7 @@ const actionLabels: Record<AlgorithmStep['action'], string> = {
 };
 
 export function VariablesPanel({ step }: VariablesPanelProps) {
-  // 标量变量：过滤掉对象，按名称稳定排序
+  // 标量变量：过滤掉对象类型
   const scalarVars = Object.entries(step.variables)
     .filter(([, v]) => typeof v !== 'object')
     .map(([name, value]) => ({ name, value }));
@@ -61,15 +61,18 @@ export function VariablesPanel({ step }: VariablesPanelProps) {
         <div className="variables-section">
           <div className="variables-section-title">指针</div>
           <div className="variables-grid">
-            {pointerEntries.map(([name, idx]) => (
-              <div key={name} className="variable-item pointer-item">
-                <span className="variable-name">{name}</span>
-                <span className="variable-value">
-                  →[{idx}]
-                  {step.array[idx] !== undefined ? ` = ${step.array[idx]}(${colorNames[step.array[idx] as Color]})` : ''}
-                </span>
-              </div>
-            ))}
+            {pointerEntries.map(([name, idx]) => {
+              const cell = step.array[idx];
+              return (
+                <div key={name} className="variable-item pointer-item">
+                  <span className="variable-name">{name}</span>
+                  <span className="variable-value">
+                    →[{idx}]
+                    {cell !== undefined ? ` = ${cell}(${colorNames[cell]})` : ''}
+                  </span>
+                </div>
+              );
+            })}
           </div>
         </div>
       )}
