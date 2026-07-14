@@ -14,18 +14,18 @@ export const algorithms: Record<AlgorithmType, AlgorithmInfo> = {
 // Canvas 优先使用 step.pointerMeta，缺失时回退到此默认配置
 export const pointerMetaConfig: Record<AlgorithmType, Record<string, PointerMeta>> = {
   'single-pointer': {
-    i: { label: '遍历指针 i', hint: '当前正在检查的数组位置', color: '#ff79c6' },
-    ptr: { label: '交换指针 ptr', hint: '下一个 0/1 应放置的位置（已排序区右边界）', color: '#4ecdc4', regionLabel: '已排序区右边界' },
+    i: { label: '遍历指针 i', hint: '当前检查位置', color: '#ff79c6' },
+    ptr: { label: '交换指针 ptr', hint: '已排序区右边界', color: '#4ecdc4', regionLabel: '已排序区' },
   },
   'double-pointer-p0p1': {
-    i: { label: '遍历指针 i', hint: '当前正在检查的数组位置', color: '#ff79c6' },
-    p0: { label: '指针 p0', hint: '下一个 0 应放置的位置', color: '#ff6b6b', regionLabel: '0 区右边界' },
-    p1: { label: '指针 p1', hint: '下一个 1 应放置的位置', color: '#f0f0f0', regionLabel: '1 区右边界' },
+    i: { label: '遍历指针 i', hint: '当前检查位置', color: '#ff79c6' },
+    p0: { label: '指针 p0', hint: '0 区右边界', color: '#ff6b6b', regionLabel: '0 区' },
+    p1: { label: '指针 p1', hint: '1 区右边界', color: '#f0f0f0', regionLabel: '1 区' },
   },
   'double-pointer-p0p2': {
-    i: { label: '遍历指针 i', hint: '当前正在检查的数组位置', color: '#ff79c6' },
-    p0: { label: '指针 p0', hint: '从左往右，下一个 0 应放置的位置', color: '#ff6b6b', regionLabel: '0 区右边界' },
-    p2: { label: '指针 p2', hint: '从右往左，下一个 2 应放置的位置', color: '#4ecdc4', regionLabel: '2 区左边界' },
+    i: { label: '遍历指针 i', hint: '当前检查位置', color: '#ff79c6' },
+    p0: { label: '指针 p0', hint: '0 区右边界', color: '#ff6b6b', regionLabel: '0 区' },
+    p2: { label: '指针 p2', hint: '2 区左边界', color: '#4ecdc4', regionLabel: '2 区' },
   },
 };
 
