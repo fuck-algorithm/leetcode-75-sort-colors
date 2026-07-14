@@ -58,40 +58,5 @@
   padding: 12px 0;
 }
 
-.variables-panel {
-  padding: 12px;
-  border-top: 1px solid #2a2a4a;
-  background: rgba(15, 15, 26, 0.5);
-}
+/* 注：.variables-* 规则已迁移至 VariablesPanel.css，由 VariablesPanel 组件专属提供 */
 
-.variables-title {
-  font-size: 12px;
-  color: #6a6a8a;
-  margin-bottom: 8px;
-}
-
-.variables-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
-  gap: 8px;
-}
-
-.variable-item {
-  display: flex;
-  flex-direction: column;
-  padding: 6px 8px;
-  background: rgba(26, 26, 46, 0.8);
-  border: 1px solid #3a3a5a;
-  border-radius: 4px;
-}
-
-.variable-name {
-  font-size: 11px;
-  color: #6a6a8a;
-}
-
-.variable-value {
-  font-size: 13px;
-  color: #4ecdc4;
-  font-family: 'Monaco', 'Menlo', monospace;
-}
