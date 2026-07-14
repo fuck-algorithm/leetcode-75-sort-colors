@@ -1,10 +1,12 @@
 import { useRef, useEffect, useState, useCallback } from 'react';
 import * as d3 from 'd3';
-import { AlgorithmStep, Color } from '../types';
+import { AlgorithmStep, Color, AlgorithmType, PointerMeta } from '../types';
+import { pointerMetaConfig } from '../algorithms';
 import '../styles/Canvas.css';
 
 interface CanvasProps {
   step: AlgorithmStep;
+  algorithmType: AlgorithmType;
 }
 
 // 颜色映射
@@ -20,7 +22,7 @@ const colorNames: Record<Color, string> = {
   2: '蓝',
 };
 
-export function Canvas({ step }: CanvasProps) {
+export function Canvas({ step, algorithmType }: CanvasProps) {
   const svgRef = useRef<SVGSVGElement>(null);
   const [transform, setTransform] = useState({ x: 0, y: 0, scale: 1 });
   const [isDragging, setIsDragging] = useState(false);
@@ -153,47 +155,66 @@ export function Canvas({ step }: CanvasProps) {
       .attr('font-size', '12px')
       .text((_, i) => `[${i}]`);
 
-    // 绘制指针
-    const pointerY = startY + cellHeight + 50;
+    // 绘制指针：每个指针带 label + hint，垂直堆叠防重叠
+    const pointerBaseY = startY + cellHeight + 50;
     const pointers = step.pointers;
+    const metaDefaults = pointerMetaConfig[algorithmType] || {};
 
-    const pointerColors: Record<string, string> = {
-      i: '#ff79c6',
-      ptr: '#4ecdc4',
-      p0: '#ff6b6b',
-      p1: '#f0f0f0',
-      p2: '#4ecdc4',
-    };
+    // 收集要绘制的指针，按索引排序后分配层级（防重叠）
+    const pointerList = Object.entries(pointers)
+      .filter(([, v]) => v !== undefined && v >= 0 && v < n)
+      .map(([key, value]) => ({
+        key,
+        value: value as number,
+        meta: step.pointerMeta?.[key] || metaDefaults[key] || {
+          label: key,
+          hint: '',
+          color: '#4ecdc4',
+        } as PointerMeta,
+      }))
+      .sort((a, b) => a.value - b.value);
 
-    const pointerLabels: Record<string, string> = {
-      i: 'i',
-      ptr: 'ptr',
-      p0: 'p0',
-      p1: 'p1',
-      p2: 'p2',
-    };
+    // 按位置分组：同一列的指针垂直堆叠，不同列尽量分行
+    const colStacks = new Map<number, number>();
+    pointerList.forEach((p) => {
+      const stackLevel = colStacks.get(p.value) || 0;
+      const pointerY = pointerBaseY + stackLevel * 38;
+      colStacks.set(p.value, stackLevel + 1);
 
-    Object.entries(pointers).forEach(([key, value]) => {
-      if (value === undefined || value < 0 || value >= n) return;
+      const x = startX + p.value * (cellWidth + gap) + cellWidth / 2;
+      const color = p.meta.color;
 
-      const x = startX + value * (cellWidth + gap) + cellWidth / 2;
-      const color = pointerColors[key] || '#4ecdc4';
-      const label = pointerLabels[key] || key;
-
-      // 绘制指针箭头
+      // 箭头
       g.append('path')
-        .attr('d', `M ${x} ${pointerY - 15} L ${x - 8} ${pointerY} L ${x + 8} ${pointerY} Z`)
+        .attr('d', `M ${x} ${pointerY - 15} L ${x - 7} ${pointerY} L ${x + 7} ${pointerY} Z`)
         .attr('fill', color);
 
-      // 绘制指针标签
+      // 标签（含语义名称）
       g.append('text')
         .attr('x', x)
-        .attr('y', pointerY + 15)
+        .attr('y', pointerY + 14)
         .attr('text-anchor', 'middle')
         .attr('fill', color)
-        .attr('font-size', '14px')
+        .attr('font-size', '13px')
         .attr('font-weight', 'bold')
-        .text(label);
+        .attr('stroke', '#1a1a2e')
+        .attr('stroke-width', '3px')
+        .attr('paint-order', 'stroke')
+        .text(p.meta.label);
+
+      // 作用说明（hint），位于标签下方，较小字号
+      if (p.meta.hint) {
+        g.append('text')
+          .attr('x', x)
+          .attr('y', pointerY + 28)
+          .attr('text-anchor', 'middle')
+          .attr('fill', 'rgba(160, 160, 192, 0.8)')
+          .attr('font-size', '10px')
+          .attr('stroke', '#1a1a2e')
+          .attr('stroke-width', '2px')
+          .attr('paint-order', 'stroke')
+          .text(p.meta.hint);
+      }
     });
 
     // 绘制交换动画指示
@@ -224,35 +245,57 @@ export function Canvas({ step }: CanvasProps) {
         .text('交换');
     }
 
-    // 绘制区域标注
-    if (pointers.p0 !== undefined || pointers.ptr !== undefined) {
-      const ptr = pointers.p0 ?? pointers.ptr ?? 0;
-      
-      if (ptr > 0) {
-        // 已排序的0区域
-        const regionWidth = ptr * (cellWidth + gap) - gap;
-        g.append('rect')
-          .attr('x', startX - 5)
-          .attr('y', startY - 5)
-          .attr('width', regionWidth + 10)
-          .attr('height', cellHeight + 10)
-          .attr('rx', 10)
-          .attr('fill', 'none')
-          .attr('stroke', 'rgba(255, 107, 107, 0.3)')
-          .attr('stroke-width', 2)
-          .attr('stroke-dasharray', '5,5');
+    // 绘制区域标注：基于 pointerMeta.regionLabel
+    const regionKeys: Array<{ key: string; side: 'left' | 'right' }> = [
+      { key: 'p0', side: 'left' },
+      { key: 'ptr', side: 'left' },
+      { key: 'p1', side: 'left' },
+      { key: 'p2', side: 'right' },
+    ];
 
-        g.append('text')
-          .attr('x', startX + regionWidth / 2)
-          .attr('y', startY + cellHeight + 55)
-          .attr('text-anchor', 'middle')
-          .attr('fill', 'rgba(255, 107, 107, 0.7)')
-          .attr('font-size', '11px')
-          .text('已排序区域');
+    const regionY = startY + cellHeight + 75;
+    regionKeys.forEach(({ key, side }) => {
+      const idx = pointers[key as keyof typeof pointers];
+      const meta = step.pointerMeta?.[key] || metaDefaults[key];
+      if (idx === undefined || !meta || !meta.regionLabel) return;
+
+      let regionX: number;
+      let regionW: number;
+      if (side === 'left') {
+        // 左侧分区：从数组起点到 idx
+        if (idx <= 0) return;
+        regionX = startX - 5;
+        regionW = idx * (cellWidth + gap) - gap + 10;
+      } else {
+        // 右侧分区：从 idx 到数组末尾
+        if (idx >= n - 1) return;
+        regionX = startX + idx * (cellWidth + gap) - gap / 2;
+        regionW = (n - idx) * (cellWidth + gap) - gap + 10;
       }
-    }
 
-  }, [step, transform]);
+      g.append('rect')
+        .attr('x', regionX)
+        .attr('y', startY - 5)
+        .attr('width', regionW)
+        .attr('height', cellHeight + 10)
+        .attr('rx', 10)
+        .attr('fill', 'none')
+        .attr('stroke', meta.color)
+        .attr('stroke-opacity', 0.35)
+        .attr('stroke-width', 2)
+        .attr('stroke-dasharray', '5,5');
+
+      g.append('text')
+        .attr('x', regionX + regionW / 2)
+        .attr('y', regionY)
+        .attr('text-anchor', 'middle')
+        .attr('fill', meta.color)
+        .attr('fill-opacity', 0.75)
+        .attr('font-size', '11px')
+        .text(meta.regionLabel);
+    });
+
+  }, [step, transform, algorithmType]);
 
   return (
     <div className="canvas-container">
