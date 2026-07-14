@@ -178,7 +178,7 @@ export function Canvas({ step, algorithmType }: CanvasProps) {
     const colStacks = new Map<number, number>();
     pointerList.forEach((p) => {
       const stackLevel = colStacks.get(p.value) || 0;
-      const pointerY = pointerBaseY + stackLevel * 38;
+      const pointerY = pointerBaseY + stackLevel * 50;
       colStacks.set(p.value, stackLevel + 1);
 
       const x = startX + p.value * (cellWidth + gap) + cellWidth / 2;
@@ -213,7 +213,7 @@ export function Canvas({ step, algorithmType }: CanvasProps) {
           .attr('stroke', '#1a1a2e')
           .attr('stroke-width', '2px')
           .attr('paint-order', 'stroke')
-          .text(p.meta.hint);
+          .text(p.meta.hint.length > 10 ? p.meta.hint.slice(0, 9) + '…' : p.meta.hint);
       }
     });
 
