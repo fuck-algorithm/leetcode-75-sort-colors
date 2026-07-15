@@ -93,6 +93,9 @@ export function generateSinglePointerSteps(input: Color[]): AlgorithmStep[] {
     array: [...nums],
     highlightLines: { java: [1, 2, 3], python: [1, 2, 3], golang: [1, 2, 3], javascript: [1, 2, 3] },
     pointers: { ptr: 0 },
+    pointerMeta: {
+      ptr: { label: '交换指针 ptr', hint: '已排序区右边界', color: '#4ecdc4', regionLabel: '已排序区' },
+    },
     variables: { n, ptr: 0, phase: '初始化' },
     description: `初始化：n = ${n}，ptr = 0，准备开始第一次遍历`,
     action: 'init',

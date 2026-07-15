@@ -114,7 +114,7 @@ function App() {
 
       <div className="main-content">
         <div className="visualization-area">
-          <Canvas step={currentStepData} />
+          <Canvas step={currentStepData} algorithmType={algorithmType} />
           <ControlPanel
             currentStep={currentStep}
             totalSteps={steps.length}

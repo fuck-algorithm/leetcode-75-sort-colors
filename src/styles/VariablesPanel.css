@@ -1,0 +1,111 @@
+/* src/styles/VariablesPanel.css */
+.variables-panel {
+  padding: 10px 12px;
+  border-top: 1px solid #2a2a4a;
+  background: rgba(15, 15, 26, 0.5);
+  flex-shrink: 0;
+  max-height: 45%;
+  overflow-y: auto;
+}
+
+.variables-panel-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
+.variables-title {
+  font-size: 12px;
+  font-weight: 600;
+  color: #a0a0c0;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.variables-action {
+  font-size: 11px;
+  padding: 2px 8px;
+  border-radius: 10px;
+  background: rgba(78, 205, 196, 0.15);
+  color: #4ecdc4;
+}
+
+.variables-action.action-swap { background: rgba(255, 215, 0, 0.15); color: #ffd700; }
+.variables-action.action-compare { background: rgba(255, 121, 198, 0.15); color: #ff79c6; }
+.variables-action.action-complete { background: rgba(80, 250, 123, 0.15); color: #50fa7b; }
+
+.variables-section {
+  margin-bottom: 10px;
+}
+
+.variables-section-title {
+  font-size: 11px;
+  color: #6a6a8a;
+  margin-bottom: 6px;
+}
+
+.variables-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(95px, 1fr));
+  gap: 6px;
+}
+
+.variable-item {
+  display: flex;
+  flex-direction: column;
+  padding: 5px 8px;
+  background: rgba(26, 26, 46, 0.8);
+  border: 1px solid #3a3a5a;
+  border-radius: 4px;
+}
+
+.variable-name {
+  font-size: 11px;
+  color: #6a6a8a;
+}
+
+.variable-value {
+  font-size: 13px;
+  color: #4ecdc4;
+  font-family: 'Monaco', 'Menlo', monospace;
+  word-break: break-all;
+}
+
+.pointer-item {
+  border-color: rgba(255, 121, 198, 0.4);
+}
+
+/* 数组快照 */
+.array-snapshot {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+.snapshot-cell {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: bold;
+  font-family: 'Monaco', monospace;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.snapshot-cell.color-0 { background: #ff6b6b; color: #fff; }
+.snapshot-cell.color-1 { background: #f0f0f0; color: #1a1a2e; }
+.snapshot-cell.color-2 { background: #4ecdc4; color: #fff; }
+
+.snapshot-cell.snapshot-compare {
+  outline: 2px solid #ff79c6;
+  outline-offset: 1px;
+}
+
+.snapshot-cell.snapshot-swap {
+  outline: 2px solid #ffd700;
+  outline-offset: 1px;
+}

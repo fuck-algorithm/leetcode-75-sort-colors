@@ -1,0 +1,54 @@
+/* src/styles/CodeLine.css */
+.code-line {
+  display: flex;
+  align-items: flex-start;
+  padding: 2px 12px;
+  font-family: 'Monaco', 'Menlo', 'Consolas', monospace;
+  font-size: 12px;
+  line-height: 1.6;
+  transition: background 0.2s;
+}
+
+.code-line.highlighted {
+  background: rgba(78, 205, 196, 0.15);
+}
+
+.code-line-number {
+  width: 28px;
+  flex-shrink: 0;
+  color: #4a4a6a;
+  text-align: right;
+  padding-right: 10px;
+  user-select: none;
+}
+
+.code-line.highlighted .code-line-number {
+  color: #4ecdc4;
+}
+
+/* 关键修复：pre-wrap 让长行换行，word-break 兜底防止超长 token 撑破容器 */
+.code-line-content {
+  flex: 1;
+  min-width: 0;
+  color: #e0e0e0;
+  white-space: pre-wrap;
+  word-break: break-all;
+  overflow-wrap: anywhere;
+}
+
+.code-line-variable {
+  flex-shrink: 0;
+  margin-left: 8px;
+  padding: 1px 6px;
+  background: rgba(255, 215, 0, 0.15);
+  border-radius: 3px;
+  color: #ffd700;
+  font-size: 11px;
+  white-space: nowrap;
+}
+
+/* 语法高亮颜色 */
+.code-keyword { color: #ff79c6; }
+.code-number { color: #bd93f9; }
+.code-string { color: #f1fa8c; }
+.code-comment { color: #6272a4; font-style: italic; }

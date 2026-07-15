@@ -80,6 +80,10 @@ export function generateDoublePointerP0P2Steps(input: Color[]): AlgorithmStep[] 
     array: [...nums],
     highlightLines: { java: [1, 2, 3], python: [1, 2, 3, 4], golang: [1, 2, 3], javascript: [1, 2, 3] },
     pointers: { p0: 0, p2: n - 1 },
+    pointerMeta: {
+      p0: { label: '指针 p0', hint: '0 区右边界', color: '#ff6b6b', regionLabel: '0 区' },
+      p2: { label: '指针 p2', hint: '2 区左边界', color: '#4ecdc4', regionLabel: '2 区' },
+    },
     variables: { n, p0: 0, p2: n - 1 },
     description: `初始化：n = ${n}，p0 = 0（左边界），p2 = ${n - 1}（右边界）`,
     action: 'init',

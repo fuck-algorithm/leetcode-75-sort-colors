@@ -33,6 +33,20 @@ export interface AlgorithmStep {
   swapIndices?: [number, number];
   // 比较的索引（如果有）
   compareIndex?: number;
+  // 指针语义元数据：键名与 pointers 的键对应，提供人类可读的说明
+  pointerMeta?: Record<string, PointerMeta>;
+}
+
+/** 单个指针的语义说明元数据 */
+export interface PointerMeta {
+  /** 指针的完整名称，如 "遍历指针 i" */
+  label: string;
+  /** 指针的作用说明，如 "当前正在检查的数组位置" */
+  hint: string;
+  /** 指针在画布上的显示颜色（hex），用于箭头与标签着色 */
+  color: string;
+  /** 指针指向区域的语义标签，如 "下一个0应放的位置"、"已排序0区右边界" */
+  regionLabel?: string;
 }
 
 // 算法信息

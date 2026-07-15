@@ -1,4 +1,4 @@
-import { Color, AlgorithmStep, AlgorithmInfo, AlgorithmType } from '../types';
+import { Color, AlgorithmStep, AlgorithmInfo, AlgorithmType, PointerMeta } from '../types';
 import { singlePointerInfo, generateSinglePointerSteps } from './singlePointer';
 import { doublePointerP0P1Info, generateDoublePointerP0P1Steps } from './doublePointerP0P1';
 import { doublePointerP0P2Info, generateDoublePointerP0P2Steps } from './doublePointerP0P2';
@@ -8,6 +8,25 @@ export const algorithms: Record<AlgorithmType, AlgorithmInfo> = {
   'single-pointer': singlePointerInfo,
   'double-pointer-p0p1': doublePointerP0P1Info,
   'double-pointer-p0p2': doublePointerP0P2Info,
+};
+
+// 各算法的指针元数据默认配置：键 = 指针名，值 = PointerMeta
+// Canvas 优先使用 step.pointerMeta，缺失时回退到此默认配置
+export const pointerMetaConfig: Record<AlgorithmType, Record<string, PointerMeta>> = {
+  'single-pointer': {
+    i: { label: '遍历指针 i', hint: '当前检查位置', color: '#ff79c6' },
+    ptr: { label: '交换指针 ptr', hint: '已排序区右边界', color: '#4ecdc4', regionLabel: '已排序区' },
+  },
+  'double-pointer-p0p1': {
+    i: { label: '遍历指针 i', hint: '当前检查位置', color: '#ff79c6' },
+    p0: { label: '指针 p0', hint: '0 区右边界', color: '#ff6b6b', regionLabel: '0 区' },
+    p1: { label: '指针 p1', hint: '1 区右边界', color: '#f0f0f0', regionLabel: '1 区' },
+  },
+  'double-pointer-p0p2': {
+    i: { label: '遍历指针 i', hint: '当前检查位置', color: '#ff79c6' },
+    p0: { label: '指针 p0', hint: '0 区右边界', color: '#ff6b6b', regionLabel: '0 区' },
+    p2: { label: '指针 p2', hint: '2 区左边界', color: '#4ecdc4', regionLabel: '2 区' },
+  },
 };
 
 // 生成算法步骤
