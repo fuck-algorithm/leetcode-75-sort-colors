@@ -12,6 +12,7 @@
   display: flex;
   align-items: center;
   gap: 8px;
+  min-width: 0;
 }
 
 .input-label {
@@ -122,4 +123,15 @@
   border-radius: 4px;
   color: #ff6b6b;
   font-size: 12px;
+}
+
+@media (max-width: 680px) {
+  .input-panel { gap: 8px; padding: 8px 10px; }
+  .input-group { flex: 1 1 100%; }
+  .input-label { font-size: 12px; }
+  .input-field { flex: 1; width: 0; min-width: 0; }
+  .apply-btn { padding: 7px 12px; }
+  .examples-group { flex: 1; flex-wrap: wrap; gap: 4px; }
+  .examples-group > span { width: 100%; }
+  .example-btn, .random-btn { padding: 5px 8px; }
 }
