@@ -18,21 +18,39 @@ const keywordSets: Record<Language, string[]> = {
   javascript: ['function', 'const', 'let', 'var', 'for', 'if', 'else', 'while', 'return'],
 };
 
+function escapeHtml(value: string): string {
+  return value.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+}
+
 function highlightCode(code: string, language: Language): string {
-  let result = code
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;');
+  const tokenRegex = /\/\/[^\n]*|#[^\n]*|"(?:\\.|[^"\\])*"|'(?:\\.|[^'\\])*'|\b\d+(?:\.\d+)?\b|[A-Za-z_]\w*/g;
+  const keywords = keywordSets[language];
+  let result = '';
+  let lastIndex = 0;
+  let match: RegExpExecArray | null;
 
-  result = result.replace(/(\/\/.*$|#.*$)/gm, '<span class="code-comment">$1</span>');
-  result = result.replace(/(".*?"|'.*?')/g, '<span class="code-string">$1</span>');
-  result = result.replace(/\b(\d+)\b/g, '<span class="code-number">$1</span>');
+  while ((match = tokenRegex.exec(code)) !== null) {
+    result += escapeHtml(code.slice(lastIndex, match.index));
 
-  keywordSets[language].forEach((keyword) => {
-    const regex = new RegExp(`\\b(${keyword})\\b`, 'g');
-    result = result.replace(regex, `<span class="code-keyword">$1</span>`);
-  });
+    const token = match[0];
+    let className: string | null = null;
+    if (token.startsWith('//') || token.startsWith('#')) {
+      className = 'code-comment';
+    } else if (token.startsWith('"') || token.startsWith("'")) {
+      className = 'code-string';
+    } else if (/^\d/.test(token)) {
+      className = 'code-number';
+    } else if (keywords.includes(token)) {
+      className = 'code-keyword';
+    }
 
+    result += className
+      ? `<span class="${className}">${escapeHtml(token)}</span>`
+      : escapeHtml(token);
+    lastIndex = match.index + token.length;
+  }
+
+  result += escapeHtml(code.slice(lastIndex));
   return result;
 }
 

@@ -1,5 +1,5 @@
-// src/components/VariablesPanel.tsx
 import { AlgorithmStep, Color } from '../types';
+import { getHeapCells, getStackLocals } from '../utils/debuggerMemory';
 import '../styles/VariablesPanel.css';
 
 interface VariablesPanelProps {
@@ -21,81 +21,90 @@ const actionLabels: Record<AlgorithmStep['action'], string> = {
 };
 
 export function VariablesPanel({ step }: VariablesPanelProps) {
-  // 标量变量：过滤掉对象类型
-  const scalarVars = Object.entries(step.variables)
-    .filter(([, v]) => typeof v !== 'object')
-    .map(([name, value]) => ({ name, value }));
+  const scalarVars = getStackLocals(step.variables);
+  const heapCells = getHeapCells(step.array);
 
-  // 指针状态
   const pointerEntries = Object.entries(step.pointers).filter(
-    ([, v]) => v !== undefined,
+    ([, value]) => value !== undefined,
   ) as [string, number][];
-
-  // action 标签
   const actionLabel = actionLabels[step.action] || step.action;
 
   return (
     <div className="variables-panel">
       <div className="variables-panel-header">
-        <span className="variables-title">调试状态</span>
+        <span className="variables-title">调试器</span>
         <span className={`variables-action action-${step.action}`}>{actionLabel}</span>
       </div>
 
-      {/* 标量变量区 */}
-      {scalarVars.length > 0 && (
-        <div className="variables-section">
-          <div className="variables-section-title">变量</div>
-          <div className="variables-grid">
-            {scalarVars.map(({ name, value }) => (
-              <div key={name} className="variable-item">
-                <span className="variable-name">{name}</span>
-                <span className="variable-value">{String(value)}</span>
+      <section className="debug-section" aria-label="调用栈">
+        <div className="debug-section-title">
+          <span>调用栈</span>
+          <span className="debug-section-meta">1 frame</span>
+        </div>
+        <div className="stack-frame">
+          <div className="stack-frame-header">
+            <span className="stack-frame-name">sortColors(…)</span>
+            <span className="stack-frame-location">step {step.id}</span>
+          </div>
+          <div className="stack-frame-body">
+            <div className="memory-row memory-row-heading">
+              <span>地址</span><span>局部变量</span><span>值</span>
+            </div>
+            {scalarVars.length > 0 ? scalarVars.map(({ name, value, address }) => (
+              <div key={name} className="memory-row">
+                <span className="memory-address">{address}</span>
+                <span className="memory-name">{name}</span>
+                <span className="memory-value">{String(value)}</span>
               </div>
-            ))}
+            )) : <div className="debug-empty">当前步骤没有局部变量</div>}
           </div>
         </div>
-      )}
+      </section>
 
-      {/* 指针状态区 */}
       {pointerEntries.length > 0 && (
-        <div className="variables-section">
-          <div className="variables-section-title">指针</div>
+        <section className="debug-section" aria-label="指针状态">
+          <div className="debug-section-title"><span>指针</span></div>
           <div className="variables-grid">
-            {pointerEntries.map(([name, idx]) => {
-              const cell = step.array[idx];
+            {pointerEntries.map(([name, index]) => {
+              const cell = step.array[index];
               return (
                 <div key={name} className="variable-item pointer-item">
                   <span className="variable-name">{name}</span>
                   <span className="variable-value">
-                    →[{idx}]
-                    {cell !== undefined ? ` = ${cell}(${colorNames[cell]})` : ''}
+                    → [{index}]{cell !== undefined ? ` = ${cell} (${colorNames[cell]})` : ' (越界)'}
                   </span>
                 </div>
               );
             })}
           </div>
-        </div>
+        </section>
       )}
 
-      {/* 数组快照区 */}
-      <div className="variables-section">
-        <div className="variables-section-title">数组快照</div>
-        <div className="array-snapshot">
-          {step.array.map((c, i) => {
-            const isCompare = step.compareIndex === i;
-            const isSwap = step.swapIndices?.includes(i);
+      <section className="debug-section heap-section" aria-label="堆内存数组">
+        <div className="debug-section-title">
+          <span>堆内存 · nums</span>
+          <span className="debug-section-meta">0x1000 · {step.array.length} 项</span>
+        </div>
+        <div className="heap-array" role="list" aria-label="nums 数组快照">
+          {heapCells.map(({ value, index, address }) => {
+            const isCompare = step.compareIndex === index;
+            const isSwap = step.swapIndices?.includes(index);
             return (
-              <span
-                key={i}
-                className={`snapshot-cell color-${c} ${isCompare ? 'snapshot-compare' : ''} ${isSwap ? 'snapshot-swap' : ''}`}
-                title={`索引 ${i}: 值 ${c} (${colorNames[c]})`}
+              <div
+                key={index}
+                role="listitem"
+                className={`heap-cell color-${value} ${isCompare ? 'heap-cell-compare' : ''} ${isSwap ? 'heap-cell-swap' : ''}`}
+                title={`nums[${index}] @ ${address} = ${value} (${colorNames[value]})`}
               >
-                {c}
-              </span>
+                <span className="heap-cell-index">[{index}]</span>
+                <span className="heap-cell-value">{value}</span>
+                <span className="heap-cell-address">{address}</span>
+              </div>
             );
           })}
         </div>
-      </div>
+        <div className="memory-note">地址为可视化示意值；数组快照随当前执行步骤更新</div>
+      </section>
     </div>
   );
 }

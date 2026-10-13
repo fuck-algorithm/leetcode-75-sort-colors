@@ -6,6 +6,13 @@
   border-top: 1px solid #2a2a4a;
 }
 
+.control-panel,
+.control-buttons,
+.speed-control,
+.speed-slider-container {
+  min-width: 0;
+}
+
 .control-buttons {
   display: flex;
   align-items: center;
@@ -159,4 +166,15 @@
   margin-top: 6px;
   font-size: 11px;
   color: #6a6a8a;
+}
+
+@media (max-width: 680px) {
+  .control-panel { padding: 8px 10px; }
+  .visualization-area { flex: 0 0 auto; }
+  .control-buttons { gap: 5px; margin-bottom: 8px; }
+  .control-btn { gap: 3px; padding: 7px 8px; font-size: 11px; }
+  .shortcut-hint { display: none; }
+  .speed-control { gap: 8px; margin-bottom: 8px; padding: 0 4px; }
+  .speed-label { font-size: 11px; }
+  .speed-value { min-width: 30px; font-size: 12px; }
 }
